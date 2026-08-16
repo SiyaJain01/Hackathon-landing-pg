@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CELESTIAL DEPTHS — 3D Minecraft Village Hackathon Game</title>
+    <link rel="stylesheet" href="hackathon.css?v=8.0">
+    <script src="hackathon.js?v=8.0" defer></script>
+</head>
+
+<body data-theme="minecraft-3d">
+
+    <!-- Fixed Background Layers -->
+    <div class="fixed-bg"></div>
+    <div class="sunbeam-overlay"></div>
+    <div class="vignette-layer"></div>
+    <canvas id="firefly-canvas"></canvas>
+
+    <!-- Top Navigation -->
+    <nav class="nav-wrapper">
+        <div class="nav">
+            <div class="nav-logo" id="nav-home-btn">
+                <span class="logo-pixel">◆ CELESTIAL REALM ◆</span>
+                <span class="logo-sub">3D MINECRAFT TOWN</span>
+            </div>
+            <div class="nav-status-banner">
+                <span class="status-indicator">● ACTIVE</span>
+                <span class="status-tip">Explore the canopy</span>
+            </div>
+            <div class="nav-controls">
+                <button class="ctrl-btn" id="ambience-toggle"><span class="ctrl-dot"></span>🎵 AMBIENCE</button>
+                <button class="btn-pixel btn-sm" id="btn-quick-reg">⚡ REGISTER</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero + XP Countdown -->
+    <section class="hero">
+        <div class="hero-inner">
+            <div class="hero-badge">TREEHOUSE EXPEDITION</div>
+            <div class="hero-title">
+                <h1 class="title-main">CELESTIAL DEPTHS</h1>
+                <span class="title-sub">3D MINECRAFT VILLAGE</span>
+            </div>
+            <p class="hero-desc">Travel between houses, enter rooms, and unlock prizes in a full 3D hackathon world.</p>
+        </div>
+    </section>
+
+    <div class="xp-container">
+        <div class="xp-meta">
+            <span class="xp-level-badge">LVL 26</span>
+            <span class="xp-departure-text">DEPARTURE TO THE CANOPY · <strong>AUG 21, 2026</strong></span>
+        </div>
+        <div class="xp-bar-outer">
+            <div class="xp-bar-inner" style="width: 84%;"></div>
+        </div>
+        <div class="xp-countdown-grid">
+            <div class="xp-cell"><span class="xp-num" id="cd-days">05</span><span class="xp-lbl">DAYS</span></div>
+            <div class="xp-cell"><span class="xp-num" id="cd-hours">09</span><span class="xp-lbl">HOURS</span></div>
+            <div class="xp-cell"><span class="xp-num" id="cd-mins">12</span><span class="xp-lbl">MINUTES</span></div>
+            <div class="xp-cell"><span class="xp-num" id="cd-secs">18</span><span class="xp-lbl">SECONDS</span></div>
+        </div>
+    </div>
+
+    <!-- Marquee Strip -->
+    <div class="marquee">
+        <div class="marquee-track" id="marquee-track"></div>
+    </div>
+
+    <!-- Game Views -->
+    <main class="game-viewport">
+        <!-- View 1: Overworld -->
+        <section id="view-overworld" class="game-view active">
+            <div class="village-interactive-map">
+                <img src="assets/bg3.1.jpg" alt="Village Map" class="village-map-bg">
+                <!-- clickable markers -->
+                <div class="map-house-marker house-main" data-house-id="th-main">
+                    <div class="marker-lantern"></div>
+                    <div class="marker-badge">
+                        <span class="marker-icon">🏠</span>
+                        <span class="marker-title">CELESTIAL DEPTHS</span>
+                        <span class="marker-prize">$25,000</span>
+                        <span class="marker-cta">ENTER ▶</span>
+                    </div>
+                </div>
+                <!-- Extra house markers -->
+<div class="map-house-marker house-ai" data-house-id="th-ai">
+  <div class="marker-lantern"></div>
+  <div class="marker-badge">
+    <span class="marker-icon">🤖</span>
+    <span class="marker-title">NEBULA SPRINT</span>
+    <span class="marker-prize">$10,000</span>
+    <span class="marker-cta">ENTER ▶</span>
+  </div>
+</div>
+
+<div class="map-house-marker house-junior" data-house-id="th-junior">
+  <div class="marker-lantern"></div>
+  <div class="marker-badge">
+    <span class="marker-icon">🌟</span>
+    <span class="marker-title">STARDUST JUNIOR</span>
+    <span class="marker-prize">$3,000</span>
+    <span class="marker-cta">ENTER ▶</span>
+  </div>
+</div>
+
+<div class="map-house-marker house-winter" data-house-id="th-winter">
+  <div class="marker-lantern"></div>
+  <div class="marker-badge badge-archived">
+    <span class="marker-icon">❄️</span>
+    <span class="marker-title">WINTER ECLIPSE '25</span>
+    <span class="marker-prize">$20,000</span>
+    <span class="marker-cta">ARCHIVED</span>
+  </div>
+</div>
+
+                <!-- add other houses similarly -->
+            </div>
+            <div id="treehouses-quick-grid" class="treehouses-quick-grid"></div>
+        </section>
+
+        <!-- View 2: House Interior -->
+        <section id="view-house-interior" class="game-view">
+            <div class="interior-header">
+                <button class="btn-pixel btn-sm btn-back" id="btn-leave-house">◀ BACK</button>
+                <div class="interior-house-title">
+                    <span class="interior-tag">ACTIVE HOUSE</span>
+                    <h2 id="active-house-name">CELESTIAL DEPTHS — MAIN CANOPY EXPEDITION</h2>
+                </div>
+                <span class="interior-hint">Click hotspots to enter rooms</span>
+            </div>
+            <div class="house-layout-container">
+                <div class="cutaway-stage">
+                    <img src="assets/interior.1.jpg" alt="House Cutaway" class="cutaway-img">
+                    <!-- hotspots -->
+                    <div class="room-hotspot hotspot-kitchen" data-room-target="kitchen">
+                        <div class="hotspot-pulse"></div>
+                        <div class="hotspot-label"><span class="h-icon">🍳</span><span class="h-name">Kitchen</span>
+                        </div>
+                    </div>
+                    <!-- Bedroom -->
+<div class="room-hotspot hotspot-bedroom" data-room-target="bedroom">
+  <div class="hotspot-pulse"></div>
+  <div class="hotspot-label"><span class="h-icon">🛏️</span><span class="h-name">Bedroom</span></div>
+</div>
+
+<!-- Maproom -->
+<div class="room-hotspot hotspot-maproom" data-room-target="maproom">
+  <div class="hotspot-pulse"></div>
+  <div class="hotspot-label"><span class="h-icon">🗺️</span><span class="h-name">Map Study</span></div>
+</div>
+
+<!-- Workshop -->
+<div class="room-hotspot hotspot-workshop" data-room-target="workshop">
+  <div class="hotspot-pulse"></div>
+  <div class="hotspot-label"><span class="h-icon">⚔️</span><span class="h-name">Workshop</span></div>
+</div>
+
+<!-- Clocktower -->
+<div class="room-hotspot hotspot-clocktower" data-room-target="clocktower">
+  <div class="hotspot-pulse"></div>
+  <div class="hotspot-label"><span class="h-icon">⏳</span><span class="h-name">Clocktower</span></div>
+</div>
+
+<!-- Library -->
+<div class="room-hotspot hotspot-library" data-room-target="library">
+  <div class="hotspot-pulse"></div>
+  <div class="hotspot-label"><span class="h-icon">📖</span><span class="h-name">Library</span></div>
+</div>
+
+<!-- Supply -->
+<div class="room-hotspot hotspot-supply" data-room-target="supply">
+  <div class="hotspot-pulse"></div>
+  <div class="hotspot-label"><span class="h-icon">📦</span><span class="h-name">Supply Crate</span></div>
+</div>
+
+                    <!-- add other hotspots -->
+                </div>
+            </div>
+            <div class="room-selector-strip">
+                <button class="room-strip-btn active" data-room="kitchen">🍳 KITCHEN</button>
+                <button class="room-strip-btn" data-room="bedroom">🛏️ BEDROOM</button>
+                <button class="room-strip-btn" data-room="maproom">🗺️ MAP ROOM</button>
+                <button class="room-strip-btn" data-room="workshop">⚔️ WORKSHOP</button>
+                <button class="room-strip-btn" data-room="clocktower">⏳ CLOCKTOWER</button>
+                <button class="room-strip-btn" data-room="library">📖 LIBRARY</button>
+                <button class="room-strip-btn btn-highlight" data-room="supply">📦 SUPPLY</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal -->
+    <div class="minecraft-modal-overlay" id="room-modal-overlay">
+        <div class="minecraft-modal-gui" id="room-modal-gui">
+            <div class="gui-header">
+                <div class="gui-title-wrap">
+                    <span class="gui-icon" id="modal-room-icon">🍳</span>
+                    <div>
+                        <span class="gui-tag" id="modal-room-tag">ROOM</span>
+                        <h3 class="gui-title" id="modal-room-title">THE KITCHEN</h3>
+                    </div>
+                </div>
+                <button class="gui-close-btn" id="modal-close-btn">✕</button>
+            </div>
+            <div class="gui-body" id="modal-room-body"></div>
+            <div class="gui-footer">
+                <span class="gui-tip">Press ESC to close</span>
+                <div class="gui-actions">
+                    <button class="btn-pixel btn-sm" id="modal-prev-room">◀ PREV</button>
+                    <button class="btn-pixel btn-sm btn-gold" id="modal-next-room">NEXT ▶</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hotbar -->
+    <aside class="hotbar-wrapper">
+        <div class="hotbar" id="minecraft-hotbar">
+            <div class="hotbar-slot active" data-key="1" data-action="overworld" title="[1] Town Overworld">
+                <span class="slot-num">1</span><span class="slot-icon">🌲</span>
+            </div>
+            <div class="hotbar-slot" data-key="2" data-action="room" data-room="kitchen" title="[2] Kitchen">
+                <span class="slot-num">2</span><span class="slot-icon">🍳</span>
+            </div>
+            <!-- add slots 3–9 -->
+            <div class="hotbar-slot" data-key="9" id="hotbar-sound-slot" title="[3] relaxing music">
+                <span class="slot-num">9</span><span class="slot-icon">🎵</span>
+            </div>
+        </div>
+        <div class="hotbar-tooltip" id="hotbar-tooltip">Press 1–3 to travel</div>
+    </aside>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2026 Celestial Depth
