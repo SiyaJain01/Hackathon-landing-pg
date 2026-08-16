@@ -33,7 +33,7 @@ hackathon.js
 ## 📸 Screenshots
 
 ### Overworld Map
-![Overworld Map](assests/Screenshots/overworldpg.png)
+![Overworld Map](assets/Screenshots/overworldpg.png)
 
 ### Interior Cutaway
 ![Interior Cutaway](assets/Screenshots/interiorpg.png)
