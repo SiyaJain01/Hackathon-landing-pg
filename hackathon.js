@@ -637,4 +637,99 @@ function initNav() {
   }
 }
 
+// ---------- 10. Quick Registration Modal & Live Count ----------
+const initQuickRegistration = () => {
+  const quickRegBtn = document.getElementById('btn-quick-reg');
+  if (quickRegBtn) {
+    quickRegBtn.addEventListener('click', () => {
+      const modalIcon = document.getElementById('modal-room-icon');
+      const modalTag = document.getElementById('modal-room-tag');
+      const modalTitle = document.getElementById('modal-room-title');
+      const modalBody = document.getElementById('modal-room-body');
+      const modalOverlay = document.getElementById('room-modal-overlay');
+
+      if (modalIcon) modalIcon.textContent = '⚡';
+      if (modalTag) modalTag.textContent = 'JOIN';
+      if (modalTitle) modalTitle.textContent = 'REGISTER FOR THE HACKATHON';
+
+      if (modalBody) {
+        modalBody.innerHTML = `
+          <div class="reg-form">
+            <input id="reg-name"  type="text"  placeholder="Your name" />
+            <input id="reg-email" type="email" placeholder="Email" />
+            <input id="reg-team"  type="text"  placeholder="Team name" />
+            <select id="reg-track">
+              <option>CELESTIAL DEPTHS</option>
+              <option>NEBULA SPRINT</option>
+              <option>STARDUST JUNIOR</option>
+            </select>
+            <button id="reg-submit" class="btn-pixel">⚡ ENTER THE CANOPY</button>
+            <p id="reg-msg"></p>
+          </div>
+        `;
+
+        const regSubmit = document.getElementById('reg-submit');
+        if (regSubmit) {
+          regSubmit.addEventListener('click', async () => {
+            const nameEl = document.getElementById('reg-name');
+            const emailEl = document.getElementById('reg-email');
+            const teamEl = document.getElementById('reg-team');
+            const trackEl = document.getElementById('reg-track');
+            const msgEl = document.getElementById('reg-msg');
+
+            const name = nameEl ? nameEl.value.trim() : '';
+            const email = emailEl ? emailEl.value.trim() : '';
+            const team_name = teamEl ? teamEl.value.trim() : '';
+            const track = trackEl ? trackEl.value : '';
+
+            if (!name || !email || !team_name) {
+              if (msgEl) msgEl.textContent = '⚠ Fill all fields first!';
+              return;
+            }
+
+            try {
+              const res = await fetch('http://localhost:3000/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, team_name, track })
+              });
+              const data = await res.json();
+              if (data.success) {
+                if (msgEl) msgEl.textContent = data.message;
+                regSubmit.textContent = '✅ REGISTERED';
+                regSubmit.disabled = true;
+              } else {
+                if (msgEl) msgEl.textContent = data.message || '⚠ Registration failed.';
+              }
+            } catch (err) {
+              if (msgEl) msgEl.textContent = '❌ Could not reach server.';
+            }
+          });
+        }
+      }
+
+      if (modalOverlay) {
+        modalOverlay.classList.add('active');
+      }
+    });
+  }
+};
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initQuickRegistration);
+} else {
+  initQuickRegistration();
+}
+
+async function loadCount() {
+  try {
+    const res  = await fetch('http://localhost:3000/api/count');
+    const data = await res.json();
+    const el   = document.getElementById('marquee-track');
+    if (el) el.innerHTML += ` ⚡ ${data.count} HACKERS REGISTERED `;
+  } catch (e) {}
+}
+loadCount();
+
+
 
